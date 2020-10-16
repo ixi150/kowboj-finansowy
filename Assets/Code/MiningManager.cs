@@ -23,6 +23,11 @@ public class MiningManager : MonoBehaviour
     public void Click()
     {
         var state = animator.GetCurrentAnimatorStateInfo(0);
+        if (animator.IsInTransition(0))
+        {
+            return;
+        }
+
         if (state.IsTag("Idle"))
         {
             animator.SetTrigger(animatorJump);
