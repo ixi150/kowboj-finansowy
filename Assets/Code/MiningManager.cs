@@ -8,12 +8,21 @@ public class MiningManager : MonoBehaviour
     [SerializeField] Transform characterSlot;
     [SerializeField] Transform rockSlot;
     [SerializeField, Range(0.5f, 10)] float timeout = 3;
+    [SerializeField, Range(0, 5)] float minigameDelay = 1;
     [SerializeField] UnityEvent onSuccessfulHit;
     [SerializeField] UnityEvent onFailedHit;
+    [SerializeField, Range(0, 1)] float successThreshold = .5f;
+
+    [Header("UI")]
+    [SerializeField] RectTransform uiContainer;
+    [SerializeField] RectTransform uiCursor;
+    [SerializeField] float uiSpeed = 1;
 
     Animator animator;
     Coroutine timeoutCoroutine;
+    Coroutine minigameCoroutine;
     bool wasSuccess;
+    float offset;
 
     private const string animatorJump = "Jump";
     private const string animatorLand = "Land";
@@ -21,6 +30,8 @@ public class MiningManager : MonoBehaviour
 
     private void Awake()
     {
+        offset = uiContainer.sizeDelta.x / 2;
+        uiContainer.gameObject.SetActive(false);
         animator = characterSlot.GetComponentInChildren<Animator>(true);
     }
 
@@ -36,15 +47,15 @@ public class MiningManager : MonoBehaviour
         {
             animator.SetTrigger(animatorJump);
             timeoutCoroutine = StartCoroutine(Timeout());
+            minigameCoroutine = StartCoroutine(Minigame());
         }
-        else if (state.IsTag("Ready"))
+        else if (uiContainer.gameObject.activeSelf)
         {
-            wasSuccess = true; //todo
+            var accuracy = 1 - (Mathf.Abs(uiCursor.anchoredPosition.x) / offset);
+            wasSuccess = accuracy > successThreshold;
             animator.SetTrigger(animatorStrike);
-            if (timeoutCoroutine != null)
-            {
-                StopCoroutine(timeoutCoroutine);
-            }
+            StopAllCoroutines();
+            StopMinigame();
         }
     }
 
@@ -64,6 +75,26 @@ public class MiningManager : MonoBehaviour
     {
         yield return new WaitForSeconds(timeout);
         animator.SetTrigger(animatorLand);
+        StopMinigame();
+        StopAllCoroutines();
+    }
+
+    IEnumerator Minigame()
+    {
+        yield return new WaitForSeconds(minigameDelay);
+        uiContainer.gameObject.SetActive(true);
+        float elapsed = Random.Range(0, 10 * uiSpeed);
+        while (true)
+        {
+            elapsed += Time.deltaTime;
+            uiCursor.anchoredPosition = new Vector3(Mathf.PingPong(elapsed * uiSpeed, offset * 2) - offset, 0);
+            yield return null;
+        }
+    }
+
+    void StopMinigame()
+    {
+        uiContainer.gameObject.SetActive(false);
     }
 
 }

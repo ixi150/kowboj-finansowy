@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4481362, g: 0.49814922, b: 0.57554764, a: 1}
+  m_IndirectSpecularColor: {r: 0.44813734, g: 0.49815017, b: 0.57555115, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 20c61b3e803dfca43a74c15eb6686b6c, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: e84823b320c08e843976ab50e1bddb43, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -123,6 +123,16 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!224 &113375753 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 113375753, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+  m_PrefabInstance: {fileID: 3865135749213075550}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1154083295 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4109016127618594702, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+  m_PrefabInstance: {fileID: 3865135749213075550}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3865135749213075550
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -130,6 +140,38 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3865135747938934272, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.004752683
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135747938934272, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.018363224
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135747938934272, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9679271
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135747938934272, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.25051433
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135748231505944, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.004752683
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135748231505944, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.018363224
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135748231505944, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9679271
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135748231505944, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.25051433
+      objectReference: {fileID: 0}
     - target: {fileID: 3865135748733977032, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
       propertyPath: m_Name
       value: === GAMEPLAY ===
@@ -177,6 +219,22 @@ PrefabInstance:
     - target: {fileID: 3865135748733977033, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135748959511961, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: uiContainer
+      value: 
+      objectReference: {fileID: 1154083295}
+    - target: {fileID: 3865135748959511961, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: uiCursor
+      value: 
+      objectReference: {fileID: 113375753}
+    - target: {fileID: 3865135748959511961, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: uiSpeed
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 3865135748959511961, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
+      propertyPath: minigameDelay
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49ee94e6d95a9b643af46faac9182351, type: 3}
