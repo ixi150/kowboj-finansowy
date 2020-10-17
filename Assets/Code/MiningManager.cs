@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MiningManager : MonoBehaviour
 {
     [SerializeField] Transform characterSlot;
     [SerializeField] Transform rockSlot;
     [SerializeField, Range(0.5f, 10)] float timeout = 3;
-    
+    [SerializeField] UnityEvent onSuccessfulHit;
+    [SerializeField] UnityEvent onFailedHit;
+
     Animator animator;
     Coroutine timeoutCoroutine;
+    bool wasSuccess;
 
     private const string animatorJump = "Jump";
     private const string animatorLand = "Land";
@@ -35,6 +39,7 @@ public class MiningManager : MonoBehaviour
         }
         else if (state.IsTag("Ready"))
         {
+            wasSuccess = true; //todo
             animator.SetTrigger(animatorStrike);
             if (timeoutCoroutine != null)
             {
@@ -45,7 +50,14 @@ public class MiningManager : MonoBehaviour
 
     public void OnHit()
     {
-
+        if (wasSuccess)
+        {
+            onSuccessfulHit.Invoke();
+        }
+        else
+        {
+            onFailedHit.Invoke();
+        }
     }
 
     IEnumerator Timeout()
