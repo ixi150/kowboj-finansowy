@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public void ResetPlayerProfile()
     {
         Gold = Diamonds = 0;
+        MiningManager.Reset();
     }
 
     public void AddGold(int amount)

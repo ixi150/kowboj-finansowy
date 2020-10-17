@@ -15,6 +15,7 @@ public class MiningManager : MonoBehaviour
     [SerializeField] UnityEvent onSuccessfulHit;
     [SerializeField] UnityEvent onRockDestroyHit;
     [SerializeField] UnityEvent onFailedHit;
+    [SerializeField] UnityEvent diamondsLimitReached;
     [SerializeField] float goldChance = 0.8f;
     [SerializeField] int goldRols = 3;
     [SerializeField] float diamondChance = 0.1f;
@@ -23,6 +24,7 @@ public class MiningManager : MonoBehaviour
     [SerializeField] RectTransform uiContainer;
     [SerializeField] RectTransform uiCursor;
     [SerializeField] float uiSpeed = 1;
+    [SerializeField] GameObject grayDiamondIcon;
 
     Animator animator;
     Coroutine timeoutCoroutine;
@@ -34,12 +36,28 @@ public class MiningManager : MonoBehaviour
     private const string animatorJump = "Jump";
     private const string animatorLand = "Land";
     private const string animatorStrike = "Strike";
+    private const string diamondThisDayKey = "diamondThisDayKey";
+    private const string diamondThisDayDateKey = "diamondThisDayDateKey";
+
+
+    public static void Reset()
+    {
+        PlayerPrefs.DeleteKey(diamondThisDayKey);
+        PlayerPrefs.DeleteKey(diamondThisDayDateKey);
+    }
 
     private void Awake()
     {
         offset = uiContainer.sizeDelta.x / 2;
         uiContainer.gameObject.SetActive(false);
         animator = characterSlot.GetComponentInChildren<Animator>(true);
+    }
+
+    private void Update()
+    {
+        int limit = Bank.Ref.DiamondsDayLimit;
+        int diamondsThisDay = PlayerPrefs.GetInt(diamondThisDayKey);
+        grayDiamondIcon.SetActive(diamondsThisDay >= limit);
     }
 
     void DestroyRock()
@@ -56,9 +74,26 @@ public class MiningManager : MonoBehaviour
             }
         }
 
-        if (TestLuck(diamondChance))
+        var today = System.DateTime.Today.Date.ToString();
+        var lastDay = PlayerPrefs.GetString(diamondThisDayDateKey);
+        if (today != lastDay)
+        {
+            PlayerPrefs.SetString(diamondThisDayDateKey, today);
+            PlayerPrefs.SetInt(diamondThisDayKey, 0);
+        }
+
+        int limit = Bank.Ref.DiamondsDayLimit;
+        int diamondsThisDay = PlayerPrefs.GetInt(diamondThisDayKey);
+        if (diamondsThisDay < limit && TestLuck(diamondChance))
         {
             GameManager.Ref.Diamonds++;
+            diamondsThisDay++;
+            PlayerPrefs.SetInt(diamondThisDayKey, diamondsThisDay);
+
+            if (diamondsThisDay == limit && !Bank.Ref.CreditCardUnlocked)
+            {
+                diamondsLimitReached.Invoke();
+            }
         }
     }
 

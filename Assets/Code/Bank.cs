@@ -20,7 +20,21 @@ public class Bank : MonoBehaviour
 
     [SerializeField] public int boughtSteps;
 
+    public bool CreditCardUnlocked => PlayerPrefs.GetInt(unlockedCreditCardKey) != 0;
+
+    public int DiamondsDayLimit => CreditCardUnlocked
+                ? diamondDayLimit + diamondLimitBonus
+                : diamondDayLimit;
+
     private const string boughtDiscountStepsKey = "boughtDiscountSteps";
+    private const string unlockedCreditCardKey = "unlockedCreditCardKey";
+
+    public static Bank Ref { get; private set; }
+
+    public void UnlockCreditCard()
+    {
+        PlayerPrefs.SetInt(unlockedCreditCardKey, 1);
+    }
 
     public void TryBuyDiscount()
     {
@@ -33,7 +47,7 @@ public class Bank : MonoBehaviour
 
     private void Update()
     {
-        percentageText.text = $"{basePercentage - stepPercentageDiscount*boughtSteps:0.00}%";
+        percentageText.text = $"{basePercentage - stepPercentageDiscount * boughtSteps:0.00}%";
         stepsSlider.value = (float)boughtSteps / maxStepsPerMonth;
         discountCostText.text = $"{costOfStep}x";
         bool isMaxDiscount = boughtSteps < maxStepsPerMonth;
@@ -42,6 +56,11 @@ public class Bank : MonoBehaviour
         discountText.text = isMaxDiscount
             ? $"-{stepPercentageDiscount}%"
             : "max!";
+    }
+
+    private void Awake()
+    {
+        Ref = this;
     }
 
     private void OnEnable()
