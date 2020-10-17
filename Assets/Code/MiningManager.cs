@@ -7,11 +7,17 @@ public class MiningManager : MonoBehaviour
 {
     [SerializeField] Transform characterSlot;
     [SerializeField] Transform rockSlot;
+    [SerializeField] GameObject rock;
     [SerializeField, Range(0.5f, 10)] float timeout = 3;
     [SerializeField, Range(0, 5)] float minigameDelay = 1;
-    [SerializeField] UnityEvent onSuccessfulHit;
-    [SerializeField] UnityEvent onFailedHit;
     [SerializeField, Range(0, 1)] float successThreshold = .5f;
+    [SerializeField] float maxHp = 0.9f;
+    [SerializeField] UnityEvent onSuccessfulHit;
+    [SerializeField] UnityEvent onRockDestroyHit;
+    [SerializeField] UnityEvent onFailedHit;
+    [SerializeField] float goldChance = 0.8f;
+    [SerializeField] int goldRols = 3;
+    [SerializeField] float diamondChance = 0.1f;
 
     [Header("UI")]
     [SerializeField] RectTransform uiContainer;
@@ -23,6 +29,7 @@ public class MiningManager : MonoBehaviour
     Coroutine minigameCoroutine;
     bool wasSuccess;
     float offset;
+    float currentHp;
 
     private const string animatorJump = "Jump";
     private const string animatorLand = "Land";
@@ -33,6 +40,37 @@ public class MiningManager : MonoBehaviour
         offset = uiContainer.sizeDelta.x / 2;
         uiContainer.gameObject.SetActive(false);
         animator = characterSlot.GetComponentInChildren<Animator>(true);
+    }
+
+    void DestroyRock()
+    {
+        rock.SetActive(false);
+        StartCoroutine(RespawnRock());
+        onRockDestroyHit.Invoke();
+
+        for (var i = 0; i < goldRols; i++)
+        {
+            if (TestLuck(goldChance))
+            {
+                GameManager.Ref.Gold++;
+            }
+        }
+
+        if (TestLuck(diamondChance))
+        {
+            GameManager.Ref.Diamonds++;
+        }
+    }
+
+    bool TestLuck(float chance)
+    {
+        return Random.Range(0f, 1f) < chance;
+    }
+
+    void ResetRock()
+    {
+        currentHp = maxHp;
+        rock.SetActive(true);
     }
 
     public void Click()
@@ -53,6 +91,11 @@ public class MiningManager : MonoBehaviour
         {
             var accuracy = 1 - (Mathf.Abs(uiCursor.anchoredPosition.x) / offset);
             wasSuccess = accuracy > successThreshold;
+            if (wasSuccess)
+            {
+                currentHp -= accuracy;
+            }
+
             animator.SetTrigger(animatorStrike);
             StopAllCoroutines();
             StopMinigame();
@@ -64,11 +107,21 @@ public class MiningManager : MonoBehaviour
         if (wasSuccess)
         {
             onSuccessfulHit.Invoke();
+            if (currentHp <=0)
+            {
+                DestroyRock();
+            }
         }
         else
         {
             onFailedHit.Invoke();
         }
+    }
+
+    IEnumerator RespawnRock()
+    {
+        yield return new WaitForSeconds(.8f);
+        ResetRock();
     }
 
     IEnumerator Timeout()
